@@ -59,7 +59,7 @@
        (shuffle)
        ))
 
-(def train-count (quot (* 90 (count samples)) 100))
+(def train-count (quot (* 80 (count samples)) 100))
 
 (def train-samples (take train-count samples))
 
@@ -73,11 +73,15 @@
 (count positive)
 (count negative)
 
+(defn make-bigrams [tokens]
+  (map vector tokens (rest tokens)))
+
+(make-bigrams [1 2 3])
+
 (defn prepare-sample [sample]
-  (->> sample
-       (:title)
-       (tokenize)
-       (frequencies)))
+  (let [tokens (->> sample (:title) (tokenize))
+        bigrams (make-bigrams tokens)]
+    (frequencies (concat tokens bigrams))))
 
 (defn train [samples total-count]
   (let [terms (->> samples
@@ -114,10 +118,10 @@
 
 (defn determine-accuracy [model test-samples]
   (let [predicted-classes (map (partial best-class model) test-samples)
-        actual-classes (map class-map test-samples)
+        actual-classes (map #(class-map (:class %)) test-samples)
         matches-count (->> (map = predicted-classes actual-classes) (filter identity) (count))]
-    (/ matches-count (count test-samples))
-    {:pred predicted-classes :act actual-classes}))
+    (* 1.0 (/ matches-count (count test-samples))
+    )))
 
 (determine-accuracy model test-samples)
 
