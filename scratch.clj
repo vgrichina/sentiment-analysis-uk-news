@@ -95,7 +95,7 @@
 (stem "вуличний")
 
 (defn prepare-sample [sample]
-  (let [tokens (->> sample (:title) (tokenize) (map stem))
+  (let [tokens (->> sample (:title) (tokenize)) ;(map stem))
         bigrams (make-bigrams tokens)]
     (->> (concat tokens bigrams)
          (frequencies)
@@ -146,7 +146,5 @@
     )))
 
 (determine-accuracy model test-samples)
-
-
 
 
