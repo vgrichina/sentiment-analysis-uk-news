@@ -1,4 +1,4 @@
-(ns sentiment-analysis
+(ns sentiment-analysis.scraper
   [:require
    [crouton.html :as html]
    [clojure.string :as string]])
