@@ -2,7 +2,9 @@
   (:use org.httpkit.server)
   (:use compojure.core)
   (:use hiccup.core)
-  (:require [compojure.handler :as handler])
+  (:require [compojure.handler :as handler]
+            [sentiment-analysis.analyzer :as analyzer]
+            [sentiment-analysis.scraper :as scraper])
   )
 
 (defn view-layout [& content]
@@ -13,16 +15,31 @@
     ]
    [:body [:div.container content]]))
 
-(defn view-input []
+
+(defn get-good-news []
+  (->> "http://www.pravda.com.ua/news/"
+       (scraper/scrape-news)
+       (map (juxt identity #(analyzer/best-class analyzer/model %)))
+       (filter #(= :positive (second %)))
+       (map first)))
+
+(defn news-item [item]
+  [:li [:a
+        {:href (java.net.URL. (java.net.URL. "http://pravda.com.ua") (:href item))}
+        (:title item)]]
+
+  )
+
+(defn view-input [news]
   (view-layout
     [:h1 "Тільки добрі новини"]
-
+    [:ul.list-unstyled (map news-item news)]
    ))
 
 
 (defroutes app
   (GET "/" []
-    (view-input))
+    (->> (get-good-news) (view-input)))
   )
 
 (stop-server)
