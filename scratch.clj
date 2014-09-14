@@ -83,9 +83,13 @@
 (defn prepare-sample [sample]
   (let [tokens (->> sample (:title) (tokenize) (map stem))
         bigrams (make-bigrams tokens)]
-    (frequencies (concat tokens bigrams))))
+    (->> (concat tokens bigrams)
+         (frequencies)
+         (map #(vector %1 1))
+         (into {})
+         )))
 
-(prepare-sample "У Маріуполі чути залпи, під містом стріляють")
+(prepare-sample {:title "У Маріуполі чути залпи, під містом стріляють"})
 
 (defn train [samples total-count]
   (let [terms (->> samples
