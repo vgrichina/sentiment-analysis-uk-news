@@ -3,7 +3,6 @@
    [crouton.html :as html]
    [clojure.string :as string]])
 
-
 (defn scrape-news [url]
   (let [data (slurp url :encoding "CP1251")
         parsed (html/parse-string data)]
@@ -45,11 +44,6 @@
        (filter #(pos? (count %)))
   ))
 
-
-(->> "У Маріуполі чути залпи, під містом стріляють \"Гради\""
-     (tokenize)
-     (frequencies))
-
 (def samples
   (->> "data/all-labeled.csv"
        (slurp)
@@ -78,10 +72,20 @@
 
 (make-bigrams [1 2 3])
 
+(def stemmer (com.componentix.nlp.stemmer.uk.Stemmer.))
+
+(defn stem [word]
+  (.stem stemmer word))
+
+(stem "вулиці")
+(stem "вуличний")
+
 (defn prepare-sample [sample]
-  (let [tokens (->> sample (:title) (tokenize))
+  (let [tokens (->> sample (:title) (tokenize) (map stem))
         bigrams (make-bigrams tokens)]
     (frequencies (concat tokens bigrams))))
+
+(prepare-sample "У Маріуполі чути залпи, під містом стріляють")
 
 (defn train [samples total-count]
   (let [terms (->> samples
@@ -124,11 +128,6 @@
     )))
 
 (determine-accuracy model test-samples)
-
-
-
-
-
 
 
 
