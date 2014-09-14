@@ -1,4 +1,4 @@
-(ns adder.core
+(ns sentiment-analysis.web
   (:use org.httpkit.server)
   (:use compojure.core)
   (:use hiccup.core)
@@ -42,5 +42,10 @@
     (->> (get-good-news) (view-input)))
   )
 
-(stop-server)
-(def stop-server (run-server (handler/site #'app) {:port 3000}))
+;(stop-server)
+;(def stop-server (run-server (handler/site #'app) {:port 3000}))
+
+(defn -main [port]
+  (run-server (handler/site #'app) {:port (read-string port)})
+  (println "Started server on port" port)
+  )

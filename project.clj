@@ -9,4 +9,6 @@
                  [compojure "1.1.6"]
                  [hiccup "1.0.5"]
                  ]
+  :main sentiment-analysis.web
+
 )
