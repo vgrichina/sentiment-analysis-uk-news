@@ -63,7 +63,7 @@
         bigrams (make-bigrams tokens)]
     (->> (concat tokens bigrams)
          (frequencies)
-         (map #(vector %1 1))
+         (map #(vector %1 1)) ; NOTE: Doesn't count same term more than one time
          (into {})
          )))
 

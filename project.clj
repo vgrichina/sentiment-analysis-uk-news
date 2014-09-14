@@ -10,5 +10,6 @@
                  [hiccup "1.0.5"]
                  ]
   :main sentiment-analysis.web
+  :aot [sentiment-analysis.web sentiment-analysis.scraper sentiment-analysis.analyzer]
 
 )

@@ -5,6 +5,7 @@
   (:require [compojure.handler :as handler]
             [sentiment-analysis.analyzer :as analyzer]
             [sentiment-analysis.scraper :as scraper])
+  (:gen-class)
   )
 
 (defn view-layout [& content]
