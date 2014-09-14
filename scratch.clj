@@ -38,6 +38,20 @@
  )
 
 
+; TODO: Submit patch?
+(defn my-shuffle
+  "Return a random permutation of coll"
+  {:added "1.2"
+   :static true}
+  [^java.util.Random r ^java.util.Collection coll]
+  (let [al (java.util.ArrayList. coll)]
+    (java.util.Collections/shuffle al r)
+    (clojure.lang.RT/vector (.toArray al))))
+
+
+(my-shuffle (java.util.Random. 123) [1 2 3 4])
+
+
 (defn tokenize [s]
   (->> (string/split s #"[^\p{L}]+")
        (map string/lower-case)
@@ -50,7 +64,7 @@
        (string/split-lines)
        (map #(string/split % #"\t"))
        (map (fn [row] {:title (row 1) :class (row 2)}))
-       (shuffle)
+       (my-shuffle (java.util.Random. 123))
        ))
 
 (def train-count (quot (* 80 (count samples)) 100))
